@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Groundtruth — forecasts, scored against the weather</title>
+<meta name="description" content="A public daily scoreboard: the leading weather forecasts, our own, and what actually happened.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <p class="brand">Groundtruth</p>
+    <h1>Every forecast is a claim.<br><em>We check them all.</em></h1>
+    <p class="lede" id="lede">Loading the record…</p>
+  </div>
+</header>
+<main class="wrap">
+  <section aria-labelledby="board-h">
+    <div class="head">
+      <h2 id="board-h">The scoreboard</h2>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Record type" id="mode"></div>
+        <div class="seg" role="group" aria-label="Lead time" id="lead"></div>
+      </div>
+    </div>
+    <p class="note" id="board-note"></p>
+    <div class="scroll"><table id="board"></table></div>
+    <div class="verdict" id="verdict"></div>
+  </section>
+
+  <section aria-labelledby="trend-h">
+    <h2 id="trend-h">Error over time</h2>
+    <p class="note">Average miss in °F, days 1–3, all 25 stations, 14-day rolling. Lower is better.</p>
+    <div id="trend"></div>
+  </section>
+
+  <section aria-labelledby="ledger-h">
+    <div class="head">
+      <h2 id="ledger-h">Their forecast, our forecast, what happened</h2>
+      <div class="controls">
+        <label class="pick">City <select id="city"></select></label>
+        <div class="seg" role="group" aria-label="High or low" id="target"></div>
+      </div>
+    </div>
+    <p class="note">Day-ahead calls, as published, against the National Weather Service climate report. The closest call each day is marked.</p>
+    <div class="scroll"><table id="ledger"></table></div>
+  </section>
+
+  <section aria-labelledby="open-h">
+    <h2 id="open-h">Open calls</h2>
+    <p class="note" id="open-note"></p>
+    <div class="scroll"><table id="open"></table></div>
+  </section>
+
+  <section aria-labelledby="desk-h">
+    <h2 id="desk-h">The reasoning desk</h2>
+    <p class="note">An AI analyst proposes changes, an AI skeptic attacks them, and code rejects anything it cannot trace to data. It competes as its own line above and can never alter the statistical forecast.</p>
+    <div id="desk"></div>
+  </section>
+
+  <section aria-labelledby="method-h" class="method">
+    <h2 id="method-h">How this works</h2>
+    <dl>
+      <dt>Truth</dt><dd>Final NWS climate reports for 25 US stations: the official daily high and low.</dd>
+      <dt>Groundtruth</dt><dd>A statistical blend of the inputs. Each day it refits bias, weights and spread from verified results only. The recipe itself is frozen and changes only at a quarterly review.</dd>
+      <dt>Live vs hindcast</dt><dd>Live forecasts are committed to a public record before the weather happens and are never edited. Hindcasts are reconstructed from archived model runs, walking forward so no forecast sees its own outcome. Treat them as weaker evidence.</dd>
+      <dt>Scoring</dt><dd>MAE is the average miss in °F. CRPS also rewards honest uncertainty and only applies to entries that publish a spread. The comparison uses a 10-day block bootstrap, and a lead is only called real when its 95% interval excludes zero.</dd>
+      <dt>The fair bar</dt><dd>The published National Blend uses 12-hour temperature windows rather than the climate day, so we also score it after the same rolling station correction we apply to ourselves. The verdict always uses whichever version is harder to beat.</dd>
+      <dt>Known limits</dt><dd>Grid models are sampled every 3 to 6 hours at the nearest grid point and shown as published, so they run a little low on highs. NWS periods and National Blend windows differ slightly from the climate day. Google's and commercial forecasts are not free to archive, so they aren't here.</dd>
+      <dt>Data</dt><dd>Based on data from ECMWF, licensed CC BY 4.0: ECMWF does not accept responsibility for any errors. NOAA/NWS National Blend of Models, GFS and forecasts. Climate reports via the Iowa Environmental Mesonet.</dd>
+      <dt>Not for safety</dt><dd>This is an experiment, not an official forecast. For warnings and decisions, use <a href="https://www.weather.gov">weather.gov</a>.</dd>
+    </dl>
+  </section>
+</main>
+<footer class="wrap"><p id="stamp"></p></footer>
+<script src="app.js"></script>
+</body>
+</html>
